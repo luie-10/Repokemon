@@ -1,0 +1,435 @@
+fileFormatVersion: 2
+guid: 528ceac323a54d045b4da68748d5f951
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -270324144638513530
+    second: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+      Backgrounds_0
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 347
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68e2c986f9d9f3cf0800000000000000
+      internalID: -270324144638513530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_1
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 347
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a81b81aa89ed4a468bf4c364da0f4fd
+      internalID: 200439809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_2
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 346
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc1ce50cb949413439737c5250d66119
+      internalID: 789656429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_3
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 232
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d36980b818e7c04b86d3779019b303d
+      internalID: 1296799639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_4
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 232
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3221302cf7966134383245f830037c64
+      internalID: -2090588900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_5
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 232
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb6495ce91452754ebf4e14fc9ec0347
+      internalID: 666876725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_6
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 117
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22b8de7f2ed44fd4c9550159a308829d
+      internalID: 1966428334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_7
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 117
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b21e343ee06f7645983fb71e8ee12f8
+      internalID: -1535108103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_8
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 117
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 776d53de3c8946a4cadbdea75f874294
+      internalID: -1282554175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_9
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 2
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10bfd90edf744de4ca59ae301a55cf0f
+      internalID: 1949594061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_10
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 2
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6559d86b49fb14428fa8b541e2df688
+      internalID: 1983132479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle
+        Backgrounds_11
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 2
+        width: 240
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b94ce669353f6449a8cc92300919d91
+      internalID: 582118900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: f85856e975b93f94480476967e29a55a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_0: -270324144638513530
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_1: 200439809
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_10: 1983132479
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_11: 582118900
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_2: 789656429
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_3: 1296799639
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_4: -2090588900
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_5: 666876725
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_6: 1966428334
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_7: -1535108103
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_8: -1282554175
+      Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Battle Backgrounds_9: 1949594061
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

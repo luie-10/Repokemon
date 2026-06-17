@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00d8aa88a455b6d4798757f975ae22e6, type: 3}
+  m_Name: eletricshorke
+  m_EditorClassIdentifier: 
+  skillName: "\uC804\uAE30\uC1FC\uD06C"
+  description: "\uC804\uAE30 \uC790\uADF9\uC744 \uC0C1\uB300\uC5D0\uAC8C \uB0A0\uB824\uC11C
+    \uACF5\uACA9\uD55C\uB2E4. \uB9C8\uBE44 \uC0C1\uD0DC\uB85C \uB9CC\uB4E4 \uB54C\uAC00
+    \uC788\uB2E4."
+  engineeringType: 4096
+  power: 40
+  accuracy: 100
+  pp: 30
+  priority: 0
+  effectStatus: 1
+  statusChance: 10
+  skillBuffs: 0
+  skillDebuffs: 0
