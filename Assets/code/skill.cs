@@ -14,7 +14,7 @@ public class Skill : ScriptableObject // 클래스 첫 글자는 대문자가 관례입니다.
     public int power;
     public int accuracy; // 명중률
     public int pp;       // 파워포인트
-    public int priority;
+    public int priority; //   우선도
 
     [Header("부가 효과")]
     public Status effectStatus;         // 부여하는 상태이상

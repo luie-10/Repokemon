@@ -14,6 +14,7 @@ public class SlectButton : MonoBehaviour
     private List<string> originalNames = new List<string>();
     [SerializeField] protected List<Button> SetAttiveUI;
     public GameObject ChoiceSlecet;
+    public GameObject ChoiceSkill;
 
     private void OnEnable()
     {
@@ -121,7 +122,8 @@ public class SlectButton : MonoBehaviour
     void Fight()
     {
         Debug.Log("싸우기 메뉴 진입! 기술 선택 UI창을 켭니다.");
-        // 예: 기존 메뉴 UI들을 끄고, 포켓몬이 가진 기술 리스트 UI를 활성화하는 로직 작성
+        ChoiceSlecet.SetActive(false);
+        ChoiceSkill.SetActive(true);
     }
 
     void OpenBag()
