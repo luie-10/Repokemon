@@ -2986,8 +2986,13 @@ MonoBehaviour:
   player:
   - {fileID: 11400000, guid: 85cad4d028e3dd64b942239801ed4ad7, type: 2}
   enemy:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 70118eda7416e2d42b5338f379d86928, type: 2}
   PlayerHpSlider: {fileID: 572026212}
+  playerNameText: {fileID: 0}
+  playerLevelText: {fileID: 0}
+  enemyNameText: {fileID: 0}
+  enemyLevelText: {fileID: 0}
+  playerHpText: {fileID: 0}
   buttonsToWatch:
   - {fileID: 91965417}
   - {fileID: 2119384798}

@@ -128,15 +128,14 @@ public class wall : MonoBehaviour
         if (player != null && player.Length > 0 && player[0] != null)
         {
             if (playerNameText != null) playerNameText.text = player[0].pokemonName;
-            if (playerLevelText != null) playerLevelText.text = $"Lv.{player[0].level}";
+            if (playerLevelText != null) playerLevelText.text = $"{player[0].level}";
 
             // 체력 슬라이더 연동
             if (PlayerHpSlider != null)
             {
                 PlayerHpSlider.maxValue = maxHP;
                 PlayerHpSlider.value = nowHP;
-            }
-            // 체력 텍스트가 있다면 반영 (ex: 45 / 45)
+            }b
             if (playerHpText != null) playerHpText.text = $"{nowHP} / {maxHP}";
         }
 
@@ -144,7 +143,7 @@ public class wall : MonoBehaviour
         if (enemy != null && enemy.Length > 0 && enemy[0] != null)
         {
             if (enemyNameText != null) enemyNameText.text = enemy[0].pokemonName;
-            if (enemyLevelText != null) enemyLevelText.text = $"Lv.{enemy[0].level}";
+            if (enemyLevelText != null) enemyLevelText.text = $"{enemy[0].level}";
 
             // 적 체력 슬라이더도 나중에 기회가 된다면 여기에 같은 방식으로 추가하시면 됩니다.
         }
