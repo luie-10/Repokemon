@@ -16,15 +16,15 @@ MonoBehaviour:
   level: 9
   type1: 1
   type2: 0
-  maxHp: 0
-  nowHp: 0
+  maxHp: 12
+  nowHp: 12
   currentExp: 0
   nextLevelExp: 0
-  attack: 0
-  defense: 0
-  spAtk: 0
-  spDef: 0
-  speed: 0
+  attack: 56
+  defense: 35
+  spAtk: 25
+  spDef: 35
+  speed: 72
   skills:
   - {fileID: 11400000, guid: e0ea4ec4979423149a09b7f22dc1b81a, type: 2}
   - {fileID: 11400000, guid: 5873647d6c485934eb0e7154891e9856, type: 2}
