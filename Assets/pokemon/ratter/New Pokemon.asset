@@ -17,7 +17,7 @@ MonoBehaviour:
   type1: 1
   type2: 0
   maxHp: 12
-  nowHp: 12
+  nowHp: 3
   currentExp: 0
   nextLevelExp: 0
   attack: 56
