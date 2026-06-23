@@ -20,35 +20,37 @@ public class SkillSlecet : MonoBehaviour
     [SerializeField] private TextMeshProUGUI typeText;
 
     [Header("배틀 로그 및 연출용 UI")]
-    [SerializeField] private GameObject skillWindowContainer; // 스킬 버튼들을 담은 UI 패널 (로그 연출 시 숨김용)
-    [SerializeField] private TextMeshProUGUI battleLogText;   // 배틀 메시지 출력용 텍스트
+    [SerializeField] private GameObject skillWindowContainer;
+    [SerializeField] private TextMeshProUGUI battleLogText;
+
+    [Header("메인 메뉴 UI 컴포넌트")]
+    [SerializeField] private GameObject mainMenuContainer;
 
     private List<Skill> currentSkills = new List<Skill>();
     private int currentSkillIndex = 0;
     private int totalSkillsCount = 0;
     private bool isAttacking = false;
 
-    #region 📊 타입 상성 매트릭스 테이블
+    #region [타입 상성 매트릭스 테이블]
     private readonly float[,] typeMatchupTable = new float[17, 17]
     {
-        /* 노    격    비    독    땅    바    벌    고    강    불    물    풀    전    에    얼    드    악  */
-        /*노말(0)*/  { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f },
-        /*격투(1)*/  { 2.0f, 1.0f, 0.5f, 0.5f, 1.0f, 2.0f, 0.5f, 0.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 2.0f, 1.0f, 2.0f },
-        /*비행(2)*/  { 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 0.5f, 2.0f, 1.0f, 0.5f, 1.0f, 1.0f, 2.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f },
-        /*독(3)*/    { 1.0f, 1.0f, 1.0f, 0.5f, 0.5f, 0.5f, 1.0f, 0.5f, 0.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f },
-        /*땅(4)*/    { 1.0f, 1.0f, 0.0f, 2.0f, 1.0f, 2.0f, 0.5f, 1.0f, 2.0f, 2.0f, 1.0f, 0.5f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f },
-        /*바위(5)*/  { 1.0f, 0.5f, 2.0f, 1.0f, 0.5f, 1.0f, 2.0f, 1.0f, 0.5f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f },
-        /*벌레(6)*/  { 1.0f, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.5f, 0.5f, 0.5f, 1.0f, 2.0f, 1.0f, 2.0f, 1.0f, 1.0f, 2.0f },
-        /*고스트(7)*/{ 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 0.5f },
-        /*강철(8)*/  { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 0.5f, 0.5f, 0.5f, 1.0f, 0.5f, 1.0f, 2.0f, 1.0f, 1.0f },
-        /*불꽃(9)*/  { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 2.0f, 1.0f, 2.0f, 0.5f, 0.5f, 2.0f, 1.0f, 1.0f, 2.0f, 0.5f, 1.0f },
-        /*물(10)*/   { 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 1.0f, 1.0f, 1.0f, 2.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f },
-        /*풀(11)*/   { 1.0f, 1.0f, 0.5f, 0.5f, 2.0f, 2.0f, 0.5f, 1.0f, 0.5f, 0.5f, 2.0f, 0.5f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f },
-        /*전기(12)*/ { 1.0f, 1.0f, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 0.5f, 0.5f, 1.0f, 1.0f, 0.5f, 1.0f },
-        /*에스퍼(13)*/{ 1.0f, 2.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 0.0f },
-        /*얼음(14)*/ { 1.0f, 1.0f, 2.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.5f, 0.5f, 2.0f, 1.0f, 1.0f, 0.5f, 2.0f, 1.0f },
-        /*드래곤(15)*/{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f },
-        /*악(16)*/   { 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 0.5f }
+        { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f },
+        { 2.0f, 1.0f, 0.5f, 0.5f, 1.0f, 2.0f, 0.5f, 0.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 2.0f, 1.0f, 2.0f },
+        { 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 0.5f, 2.0f, 1.0f, 0.5f, 1.0f, 1.0f, 2.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 0.5f, 0.5f, 0.5f, 1.0f, 0.5f, 0.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 0.0f, 2.0f, 1.0f, 2.0f, 0.5f, 1.0f, 2.0f, 2.0f, 1.0f, 0.5f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f },
+        { 1.0f, 0.5f, 2.0f, 1.0f, 0.5f, 1.0f, 2.0f, 1.0f, 0.5f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f },
+        { 1.0f, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.5f, 0.5f, 0.5f, 1.0f, 2.0f, 1.0f, 2.0f, 1.0f, 1.0f, 2.0f },
+        { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 0.5f },
+        { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 0.5f, 0.5f, 0.5f, 1.0f, 0.5f, 1.0f, 2.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 2.0f, 1.0f, 2.0f, 0.5f, 0.5f, 2.0f, 1.0f, 1.0f, 2.0f, 0.5f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 1.0f, 1.0f, 1.0f, 2.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f },
+        { 1.0f, 1.0f, 0.5f, 0.5f, 2.0f, 2.0f, 0.5f, 1.0f, 0.5f, 0.5f, 2.0f, 0.5f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f },
+        { 1.0f, 1.0f, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 0.5f, 0.5f, 1.0f, 1.0f, 0.5f, 1.0f },
+        { 1.0f, 2.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 0.0f },
+        { 1.0f, 1.0f, 2.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.5f, 0.5f, 2.0f, 1.0f, 1.0f, 0.5f, 2.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f },
+        { 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 0.5f }
     };
     #endregion
 
@@ -61,11 +63,6 @@ public class SkillSlecet : MonoBehaviour
         if (battleLogText != null) battleLogText.text = "어떤 기술을 선택할까?";
 
         InitSkillWindow();
-    }
-
-    private void OnDisable()
-    {
-        if (wallManager != null) wallManager.isSkillWindowOpen = false;
     }
 
     private void InitSkillWindow()
@@ -188,45 +185,142 @@ public class SkillSlecet : MonoBehaviour
             ? enemyPoke.Skills[Random.Range(0, enemyPoke.Skills.Count)]
             : playerSkill;
 
-        bool isEnemyFaster = enemyPoke.speed > playerPoke.speed;
+        bool isEnemyFaster = enemyPoke.currentSpeed > playerPoke.currentSpeed;
 
         if (isEnemyFaster)
         {
-            // 1. 적이 더 빠름 -> 적의 공격 (타겟: 플레이어)
-            yield return StartCoroutine(ExecuteSkillAction(enemyPoke, playerPoke, enemySkill, wallManager.PlayerHpSlider, true));
+            yield return StartCoroutine(ExecuteSkillWithStatusCheck(enemyPoke, playerPoke, enemySkill, wallManager.PlayerHpSlider, true));
 
-            if (playerPoke.nowHp > 0)
+            if (playerPoke.nowHp > 0 && enemyPoke.nowHp > 0)
             {
-                // 플레이어의 반격 (타겟: 적)
-                yield return StartCoroutine(ExecuteSkillAction(playerPoke, enemyPoke, playerSkill, wallManager.EnemyHpSlider, false));
+                yield return StartCoroutine(ExecuteSkillWithStatusCheck(playerPoke, enemyPoke, playerSkill, wallManager.EnemyHpSlider, false));
             }
         }
         else
         {
-            // 2. 플레이어가 더 빠름 -> 플레이어의 공격 (타겟: 적)
-            yield return StartCoroutine(ExecuteSkillAction(playerPoke, enemyPoke, playerSkill, wallManager.EnemyHpSlider, false));
+            yield return StartCoroutine(ExecuteSkillWithStatusCheck(playerPoke, enemyPoke, playerSkill, wallManager.EnemyHpSlider, false));
 
-            if (enemyPoke.nowHp > 0)
+            if (enemyPoke.nowHp > 0 && playerPoke.nowHp > 0)
             {
-                // 적의 반격 (타겟: 플레이어)
-                yield return StartCoroutine(ExecuteSkillAction(enemyPoke, playerPoke, enemySkill, wallManager.PlayerHpSlider, true));
+                yield return StartCoroutine(ExecuteSkillWithStatusCheck(enemyPoke, playerPoke, enemySkill, wallManager.PlayerHpSlider, true));
             }
         }
 
+        if (playerPoke.nowHp > 0) yield return StartCoroutine(ProcessTurnEndStatusEffects(playerPoke, wallManager.PlayerHpSlider, true));
+        if (enemyPoke.nowHp > 0) yield return StartCoroutine(ProcessTurnEndStatusEffects(enemyPoke, wallManager.EnemyHpSlider, false));
+
         yield return new WaitForSeconds(0.5f);
+
+        if (playerPoke.nowHp <= 0 || enemyPoke.nowHp <= 0)
+        {
+            if (playerPoke.nowHp <= 0) battleLogText.text = $"{playerPoke.pokemonName}은(는) 쓰러졌다...";
+            else battleLogText.text = "상대 포켓몬을 쓰러뜨렸다!";
+            isAttacking = false;
+            yield break;
+        }
+
         isAttacking = false;
 
-        // 🛠️ 중요: 매니저 오브젝트가 통째로 꺼지지 않게 컨테이너 UI 패널만 정밀하게 비활성화
-        if (skillWindowContainer != null)
+        if (wallManager != null)
         {
-            skillWindowContainer.SetActive(false);
+            wallManager.isSkillWindowOpen = false;
+            wallManager.UpdateBattleUI();
         }
+
+        if (mainMenuContainer != null)
+        {
+            mainMenuContainer.SetActive(true);
+        }
+
+        if (battleLogText != null)
+        {
+            battleLogText.text = "어떤 행동을 할까?";
+        }
+
+        this.gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// 스킬 행동 처리 서브 코루틴
-    /// </summary>
-    /// <param name="isTargetPlayer">피격자가 플레이어(피카츄)인지 여부 판단 플래그</param>
+    #region [행동 조건 판정 및 상태이상 데미지 서브 코루틴]
+    private IEnumerator ExecuteSkillWithStatusCheck(Pokemon attacker, Pokemon defender, Skill skill, Slider targetHpSlider, bool isTargetPlayer)
+    {
+        if (attacker.currentStatus == Status.Sleep)
+        {
+            attacker.statusTurnCount--;
+            if (attacker.statusTurnCount <= 0)
+            {
+                attacker.CureStatus();
+                battleLogText.text = $"{attacker.pokemonName}은(는) 잠에서 깨어났다!";
+                yield return new WaitForSeconds(1.3f);
+            }
+            else
+            {
+                battleLogText.text = $"{attacker.pokemonName}은(는) 깊은 잠에 빠져있다...";
+                yield return new WaitForSeconds(1.3f);
+                yield break;
+            }
+        }
+
+        if (attacker.currentStatus == Status.Freeze)
+        {
+            if (Random.Range(0, 100) < 20)
+            {
+                attacker.CureStatus();
+                battleLogText.text = $"{attacker.pokemonName}의 얼음이 풀렸다!";
+                yield return new WaitForSeconds(1.3f);
+            }
+            else
+            {
+                battleLogText.text = $"{attacker.pokemonName}은(는) 얼어서 움직일 수 없다!";
+                yield return new WaitForSeconds(1.3f);
+                yield break;
+            }
+        }
+
+        if (attacker.currentStatus == Status.Paralysis && Random.Range(0, 100) < 25)
+        {
+            battleLogText.text = $"{attacker.pokemonName}은(는) 몸이 마비되어 움직일 수 없다!";
+            yield return new WaitForSeconds(1.3f);
+            yield break;
+        }
+
+        if (attacker.currentStatus == Status.Confusion)
+        {
+            attacker.statusTurnCount--;
+            if (attacker.statusTurnCount <= 0)
+            {
+                attacker.CureStatus();
+                battleLogText.text = $"{attacker.pokemonName}의 혼란이 풀렸다!";
+                yield return new WaitForSeconds(1.3f);
+            }
+            else
+            {
+                battleLogText.text = $"{attacker.pokemonName}은(는) 혼란에 빠져있다!";
+                yield return new WaitForSeconds(1.3f);
+
+                if (Random.Range(0, 100) < 50)
+                {
+                    battleLogText.text = "혼란스러워 자신을 공격했다!";
+                    yield return new WaitForSeconds(1.3f);
+
+                    int selfDamage = Mathf.RoundToInt(((2 * attacker.level / 5 + 2) * 40 * attacker.attack / Mathf.Max(1, attacker.defense) / 50 + 2));
+                    attacker.nowHp = Mathf.Max(0, attacker.nowHp - selfDamage);
+
+                    if (isTargetPlayer)
+                    {
+                        yield return StartCoroutine(UpdateHPSliderRoutine(wallManager.EnemyHpSlider, attacker, false));
+                    }
+                    else
+                    {
+                        yield return StartCoroutine(UpdateHPSliderRoutine(wallManager.PlayerHpSlider, attacker, true));
+                    }
+                    yield break;
+                }
+            }
+        }
+
+        yield return StartCoroutine(ExecuteSkillAction(attacker, defender, skill, targetHpSlider, isTargetPlayer));
+    }
+
     private IEnumerator ExecuteSkillAction(Pokemon attacker, Pokemon defender, Skill skill, Slider targetHpSlider, bool isTargetPlayer)
     {
         if (battleLogText != null)
@@ -248,51 +342,13 @@ public class SkillSlecet : MonoBehaviour
                 typeMultiplier *= GetTypeMultiplier(skill.engineeringType, defender.type2);
             }
 
-            int targetDefense = defender.defense;
-            if (targetDefense <= 0) targetDefense = 1;
-
+            int targetDefense = defender.currentDefense;
             int damage = Mathf.RoundToInt(((2 * attacker.level / 5 + 2) * skill.power * attacker.attack / targetDefense / 50 + 2) * typeMultiplier);
-
-            // 데미지 이전 체력 기록 (부드러운 텍스트 감소용)
-            int hpBeforeDamage = defender.nowHp;
 
             defender.nowHp -= damage;
             if (defender.nowHp < 0) defender.nowHp = 0;
 
-            // HP 바 및 텍스트 감산 실시간 연출
-            if (targetHpSlider != null)
-            {
-                float targetValue = (float)defender.nowHp / defender.maxHp;
-                float startValue = targetHpSlider.value;
-                float elapsedTime = 0f;
-                float duration = 0.5f;
-
-                while (elapsedTime < duration)
-                {
-                    elapsedTime += Time.unscaledDeltaTime;
-                    float currentProgress = elapsedTime / duration;
-
-                    // 슬라이더 바 조정
-                    targetHpSlider.value = Mathf.Lerp(startValue, targetValue, currentProgress);
-
-                    // 💥 [추가]: 피격자가 플레이어(피카츄)일 때 텍스트 글자 수치도 슬라이더 속도에 맞춰 실시간 감산
-                    if (isTargetPlayer)
-                    {
-                        int visualHp = Mathf.RoundToInt(Mathf.Lerp(hpBeforeDamage, defender.nowHp, currentProgress));
-                        wallManager.UpdatePlayerHpTextRealtime(visualHp);
-                    }
-
-                    yield return null;
-                }
-                targetHpSlider.value = targetValue;
-
-                // 최종 연출 오차 고정
-                if (isTargetPlayer)
-                {
-                    wallManager.UpdatePlayerHpTextRealtime(defender.nowHp);
-                }
-            }
-            yield return new WaitForSeconds(0.3f);
+            yield return StartCoroutine(UpdateHPSliderRoutine(targetHpSlider, defender, isTargetPlayer));
 
             if (battleLogText != null)
             {
@@ -313,15 +369,88 @@ public class SkillSlecet : MonoBehaviour
                 }
             }
         }
+
+        if (skill.effectStatus != Status.None && defender.nowHp > 0)
+        {
+            if (Random.Range(0, 100) < skill.statusChance)
+            {
+                if (defender.ApplyStatus(skill.effectStatus))
+                {
+                    string statusMsg = "";
+                    switch (skill.effectStatus)
+                    {
+                        case Status.Paralysis: statusMsg = $"{defender.pokemonName}은(는) 마비되어 저려왔다!"; break;
+                        case Status.Burn: statusMsg = $"{defender.pokemonName}은(는) 화상을 입었다!"; break;
+                        case Status.Poison: statusMsg = $"{defender.pokemonName}은(는) 독에 걸렸다!"; break;
+                        case Status.Sleep: statusMsg = $"{defender.pokemonName}은(는) 깊은 잠에 빠졌다!"; break;
+                        case Status.Freeze: statusMsg = $"{defender.pokemonName}은(는) 꽁꽁 얼어붙었다!"; break;
+                        case Status.Confusion: statusMsg = $"{defender.pokemonName}은(는) 혼란에 빠졌다!"; break;
+                    }
+                    battleLogText.text = statusMsg;
+                    wallManager.UpdateBattleUI();
+                    yield return new WaitForSeconds(1.3f);
+                }
+            }
+        }
     }
+
+    private IEnumerator ProcessTurnEndStatusEffects(Pokemon pokemon, Slider hpSlider, bool isPlayer)
+    {
+        if (pokemon.currentStatus == Status.Poison || pokemon.currentStatus == Status.Burn)
+        {
+            int dotDamage = Mathf.Max(1, pokemon.maxHp / 8);
+            pokemon.nowHp = Mathf.Max(0, pokemon.nowHp - dotDamage);
+
+            if (pokemon.currentStatus == Status.Poison)
+                battleLogText.text = $"{pokemon.pokemonName}은(는) 독의 데미지를 입고 있다!";
+            else
+                battleLogText.text = $"{pokemon.pokemonName}은(는) 화상의 데미지를 입고 있다!";
+
+            yield return new WaitForSeconds(1.3f);
+            yield return StartCoroutine(UpdateHPSliderRoutine(hpSlider, pokemon, isPlayer));
+        }
+    }
+
+    private IEnumerator UpdateHPSliderRoutine(Slider targetHpSlider, Pokemon targetPokemon, bool isTargetPlayer)
+    {
+        if (targetHpSlider != null)
+        {
+            float targetValue = (float)targetPokemon.nowHp / targetPokemon.maxHp;
+            float startValue = targetHpSlider.value;
+            float elapsedTime = 0f;
+            float duration = 0.5f;
+
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.unscaledDeltaTime;
+                float currentProgress = elapsedTime / duration;
+
+                targetHpSlider.value = Mathf.Lerp(startValue, targetValue, currentProgress);
+
+                if (isTargetPlayer)
+                {
+                    int visualHp = Mathf.RoundToInt(Mathf.Lerp(targetPokemon.maxHp * startValue, targetPokemon.nowHp, currentProgress));
+                    wallManager.UpdatePlayerHpTextRealtime(visualHp);
+                }
+
+                yield return null;
+            }
+            targetHpSlider.value = targetValue;
+
+            if (isTargetPlayer)
+            {
+                wallManager.UpdatePlayerHpTextRealtime(targetPokemon.nowHp);
+            }
+        }
+        yield return new WaitForSeconds(0.3f);
+    }
+    #endregion
 
     private float GetTypeMultiplier(PokemonType attackType, PokemonType defenseType)
     {
         int atkIndex = GetTypeIndex(attackType);
         int defIndex = GetTypeIndex(defenseType);
-
         if (atkIndex < 0 || atkIndex >= 17 || defIndex < 0 || defIndex >= 17) return 1.0f;
-
         return typeMatchupTable[atkIndex, defIndex];
     }
 
@@ -335,12 +464,10 @@ public class SkillSlecet : MonoBehaviour
     private GameObject GetUIUnderMouse()
     {
         if (Mouse.current == null || EventSystem.current == null) return null;
-
         PointerEventData eventData = new PointerEventData(EventSystem.current);
         eventData.position = Mouse.current.position.ReadValue();
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
-
         if (results.Count > 0) return results[0].gameObject;
         return null;
     }

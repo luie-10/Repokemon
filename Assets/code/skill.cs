@@ -2,29 +2,27 @@ using UnityEngine;
 using System;
 
 [CreateAssetMenu(fileName = "New Skill", menuName = "Pokemon/Skill Data")]
-public class Skill : ScriptableObject // 클래스 첫 글자는 대문자가 관례입니다.
+public class Skill : ScriptableObject
 {
     [Header("기본 정보")]
-    public string skillName; // name 대치
+    public string skillName;
     [TextArea(2, 5)]
     public string description;
 
     [Header("기술 속성")]
-    public PokemonType engineeringType; // 기술의 속성 (physics 대신 직관적인 이름 추천)
+    public PokemonType engineeringType;
     public int power;
-    public int accuracy; // 명중률
-    public int pp;       // 파워포인트
-    public int priority; //   우선도
+    public int accuracy;
+    public int pp;
+    public int priority;
 
     [Header("부가 효과")]
-    public Status effectStatus;         // 부여하는 상태이상
-    public int statusChance;            // 상태이상 확률
+    public Status effectStatus;         // 부여하는 상태이상 (None, Paralysis, Burn, Poison, Sleep, Freeze, Confusion)
+    [Range(0, 100)] public int statusChance; // 상태이상 발생 확률 (0 ~ 100%)
 
-    public Buff skillBuffs;             // 자신 혹은 아군 버프
-    public Debuff skillDebuffs;         // 적 디버프
-    
+    public Buff skillBuffs;
+    public Debuff skillDebuffs;
 }
-
 [Flags]
 public enum PokemonType // 명확하게 속성(Type)으로 명칭 변경 권장
 {
