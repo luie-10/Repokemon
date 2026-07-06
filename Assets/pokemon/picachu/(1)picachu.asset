@@ -16,8 +16,8 @@ MonoBehaviour:
   level: 10
   type1: 4096
   type2: 0
-  maxHp: 28
-  nowHp: 28
+  maxHp: 35
+  nowHp: 21
   currentExp: 10
   nextLevelExp: 20
   attack: 55
@@ -30,3 +30,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 72259a1cca8aad64f86f246a5f20f4c5, type: 2}
   - {fileID: 11400000, guid: 3a7e281c2c7fd6a47baaa02a77c2fcd4, type: 2}
   - {fileID: 11400000, guid: 2c843673a4ebb754d989006d0483cbf8, type: 2}
+  currentStatus: 0
+  statusTurnCount: 0

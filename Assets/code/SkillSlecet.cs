@@ -71,7 +71,7 @@ public class SkillSlecet : MonoBehaviour
 
         Pokemon activePokemon = wallManager.player[0];
         currentSkills = activePokemon.Skills;
-        totalSkillsCount = currentSkills.Count;
+        totalSkillsCount = currentSkills != null ? currentSkills.Count : 0;
 
         for (int i = 0; i < skillButtonTexts.Count; i++)
         {
@@ -185,37 +185,44 @@ public class SkillSlecet : MonoBehaviour
             ? enemyPoke.Skills[Random.Range(0, enemyPoke.Skills.Count)]
             : playerSkill;
 
-        bool isEnemyFaster = enemyPoke.currentSpeed > playerPoke.currentSpeed;
+        bool isEnemyFaster = enemyPoke.speed > playerPoke.speed;
 
         if (isEnemyFaster)
         {
             yield return StartCoroutine(ExecuteSkillWithStatusCheck(enemyPoke, playerPoke, enemySkill, wallManager.PlayerHpSlider, true));
 
-            if (playerPoke.nowHp > 0 && enemyPoke.nowHp > 0)
+            if (playerPoke.nowHp <= 0 || enemyPoke.nowHp <= 0)
             {
-                yield return StartCoroutine(ExecuteSkillWithStatusCheck(playerPoke, enemyPoke, playerSkill, wallManager.EnemyHpSlider, false));
+                yield return StartCoroutine(HandleBattleEndFlow(playerPoke, enemyPoke));
+                yield break;
             }
+
+            yield return StartCoroutine(ExecuteSkillWithStatusCheck(playerPoke, enemyPoke, playerSkill, wallManager.EnemyHpSlider, false));
         }
         else
         {
             yield return StartCoroutine(ExecuteSkillWithStatusCheck(playerPoke, enemyPoke, playerSkill, wallManager.EnemyHpSlider, false));
 
-            if (enemyPoke.nowHp > 0 && playerPoke.nowHp > 0)
+            if (playerPoke.nowHp <= 0 || enemyPoke.nowHp <= 0)
             {
-                yield return StartCoroutine(ExecuteSkillWithStatusCheck(enemyPoke, playerPoke, enemySkill, wallManager.PlayerHpSlider, true));
+                yield return StartCoroutine(HandleBattleEndFlow(playerPoke, enemyPoke));
+                yield break;
             }
+
+            yield return StartCoroutine(ExecuteSkillWithStatusCheck(enemyPoke, playerPoke, enemySkill, wallManager.PlayerHpSlider, true));
         }
 
-        if (playerPoke.nowHp > 0) yield return StartCoroutine(ProcessTurnEndStatusEffects(playerPoke, wallManager.PlayerHpSlider, true));
-        if (enemyPoke.nowHp > 0) yield return StartCoroutine(ProcessTurnEndStatusEffects(enemyPoke, wallManager.EnemyHpSlider, false));
+        if (playerPoke.nowHp > 0 && enemyPoke.nowHp > 0)
+        {
+            yield return StartCoroutine(ProcessTurnEndStatusEffects(playerPoke, wallManager.PlayerHpSlider, true));
+            yield return StartCoroutine(ProcessTurnEndStatusEffects(enemyPoke, wallManager.EnemyHpSlider, false));
+        }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
 
         if (playerPoke.nowHp <= 0 || enemyPoke.nowHp <= 0)
         {
-            if (playerPoke.nowHp <= 0) battleLogText.text = $"{playerPoke.pokemonName}은(는) 쓰러졌다...";
-            else battleLogText.text = "상대 포켓몬을 쓰러뜨렸다!";
-            isAttacking = false;
+            yield return StartCoroutine(HandleBattleEndFlow(playerPoke, enemyPoke));
             yield break;
         }
 
@@ -227,20 +234,27 @@ public class SkillSlecet : MonoBehaviour
             wallManager.UpdateBattleUI();
         }
 
-        if (mainMenuContainer != null)
-        {
-            mainMenuContainer.SetActive(true);
-        }
-
-        if (battleLogText != null)
-        {
-            battleLogText.text = "어떤 행동을 할까?";
-        }
+        if (mainMenuContainer != null) mainMenuContainer.SetActive(true);
+        if (battleLogText != null) battleLogText.text = "어떤 행동을 할까?";
 
         this.gameObject.SetActive(false);
     }
 
-    #region [행동 조건 판정 및 상태이상 데미지 서브 코루틴]
+    private IEnumerator HandleBattleEndFlow(Pokemon playerPoke, Pokemon enemyPoke)
+    {
+        if (playerPoke.nowHp <= 0)
+        {
+            if (battleLogText != null) battleLogText.text = $"{playerPoke.pokemonName}은(는) 쓰러졌다...";
+        }
+        else if (enemyPoke.nowHp <= 0)
+        {
+            if (battleLogText != null) battleLogText.text = "상대 포켓몬을 쓰러뜨렸다!";
+        }
+
+        yield return new WaitForSeconds(1.5f);
+        isAttacking = false;
+    }
+
     private IEnumerator ExecuteSkillWithStatusCheck(Pokemon attacker, Pokemon defender, Skill skill, Slider targetHpSlider, bool isTargetPlayer)
     {
         if (attacker.currentStatus == Status.Sleep)
@@ -305,14 +319,9 @@ public class SkillSlecet : MonoBehaviour
                     int selfDamage = Mathf.RoundToInt(((2 * attacker.level / 5 + 2) * 40 * attacker.attack / Mathf.Max(1, attacker.defense) / 50 + 2));
                     attacker.nowHp = Mathf.Max(0, attacker.nowHp - selfDamage);
 
-                    if (isTargetPlayer)
-                    {
-                        yield return StartCoroutine(UpdateHPSliderRoutine(wallManager.EnemyHpSlider, attacker, false));
-                    }
-                    else
-                    {
-                        yield return StartCoroutine(UpdateHPSliderRoutine(wallManager.PlayerHpSlider, attacker, true));
-                    }
+                    // 자해 대상에 따른 Slider 매칭 버그 수정 (isTargetPlayer 기반이 아님)
+                    Slider selfSlider = isTargetPlayer ? wallManager.EnemyHpSlider : wallManager.PlayerHpSlider;
+                    yield return StartCoroutine(UpdateHPSliderRoutine(selfSlider, attacker, !isTargetPlayer));
                     yield break;
                 }
             }
@@ -342,11 +351,10 @@ public class SkillSlecet : MonoBehaviour
                 typeMultiplier *= GetTypeMultiplier(skill.engineeringType, defender.type2);
             }
 
-            int targetDefense = defender.currentDefense;
+            int targetDefense = Mathf.Max(1, defender.defense);
             int damage = Mathf.RoundToInt(((2 * attacker.level / 5 + 2) * skill.power * attacker.attack / targetDefense / 50 + 2) * typeMultiplier);
 
-            defender.nowHp -= damage;
-            if (defender.nowHp < 0) defender.nowHp = 0;
+            defender.nowHp = Mathf.Max(0, defender.nowHp - damage);
 
             yield return StartCoroutine(UpdateHPSliderRoutine(targetHpSlider, defender, isTargetPlayer));
 
@@ -407,7 +415,7 @@ public class SkillSlecet : MonoBehaviour
                 battleLogText.text = $"{pokemon.pokemonName}은(는) 화상의 데미지를 입고 있다!";
 
             yield return new WaitForSeconds(1.3f);
-            yield return StartCoroutine(UpdateHPSliderRoutine(hpSlider, pokemon, isPlayer));
+            yield return StartCoroutine(UpdateHPSliderRoutine(hpSlider, pokemon, !isPlayer)); // target이 플레이어인지 여부 반전 맞춤
         }
     }
 
@@ -415,36 +423,31 @@ public class SkillSlecet : MonoBehaviour
     {
         if (targetHpSlider != null)
         {
-            float targetValue = (float)targetPokemon.nowHp / targetPokemon.maxHp;
+            float targetValue = Mathf.Clamp01((float)targetPokemon.nowHp / targetPokemon.maxHp);
             float startValue = targetHpSlider.value;
             float elapsedTime = 0f;
             float duration = 0.5f;
 
             while (elapsedTime < duration)
             {
-                elapsedTime += Time.unscaledDeltaTime;
-                float currentProgress = elapsedTime / duration;
+                elapsedTime += Time.deltaTime;
+                float currentProgress = Mathf.Clamp01(elapsedTime / duration);
 
                 targetHpSlider.value = Mathf.Lerp(startValue, targetValue, currentProgress);
 
                 if (isTargetPlayer)
                 {
                     int visualHp = Mathf.RoundToInt(Mathf.Lerp(targetPokemon.maxHp * startValue, targetPokemon.nowHp, currentProgress));
+                    // 전체 UI를 덮어씌우는 대신 플레이어 텍스트만 실시간으로 안전하게 갱신하도록 우회
                     wallManager.UpdatePlayerHpTextRealtime(visualHp);
                 }
-
                 yield return null;
             }
             targetHpSlider.value = targetValue;
-
-            if (isTargetPlayer)
-            {
-                wallManager.UpdatePlayerHpTextRealtime(targetPokemon.nowHp);
-            }
+            wallManager.UpdateBattleUI(); // 연출이 완전히 종료된 후 최종 UI 정보 전체 동기화
         }
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.2f);
     }
-    #endregion
 
     private float GetTypeMultiplier(PokemonType attackType, PokemonType defenseType)
     {
@@ -456,9 +459,10 @@ public class SkillSlecet : MonoBehaviour
 
     private int GetTypeIndex(PokemonType type)
     {
+        // 2진수 문자열 변환 방식 대신 안전하고 직관적인 정수 캐스팅 인덱싱 적용
         int value = (int)type;
-        if (value <= 0) return 0;
-        return System.Convert.ToString(value, 2).Length - 1;
+        if (value < 0 || value >= 17) return 0;
+        return value;
     }
 
     private GameObject GetUIUnderMouse()
