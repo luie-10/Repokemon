@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // ⭐ UI Image, Button 제어를 위해 필수
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
@@ -21,7 +21,6 @@ public class BagManager : MonoBehaviour
 
     void Awake()
     {
-        // 아이템 데이터 세팅
         itemNames.Add("상처약");
         itemDescriptions.Add("포켓몬 1마리의 HP를 20만큼 회복시킨다.");
     }
@@ -97,7 +96,7 @@ public class BagManager : MonoBehaviour
             {
                 itemButtonTexts[i].text = baseName;
             }
-        } // ⭐ 이 부분의 중괄호 구조가 꼬여있던 점이 수정되었습니다.
+        }
     }
 
     public void UseCurrentItem()
