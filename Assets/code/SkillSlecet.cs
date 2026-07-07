@@ -20,11 +20,8 @@ public class SkillSlecet : MonoBehaviour
     [SerializeField] private TextMeshProUGUI typeText;
 
     [Header("배틀 로그 및 연출용 UI")]
-    [SerializeField] private GameObject skillWindowContainer;
+    [SerializeField] private GameObject skillWindowContainer; // 메인/기술 UI 전체를 감싸는 최상위 부모 컨테이너
     [SerializeField] private TextMeshProUGUI battleLogText;
-
-    [Header("메인 메뉴 UI 컴포넌트")]
-    [SerializeField] private GameObject mainMenuContainer;
 
     private List<Skill> currentSkills = new List<Skill>();
     private int currentSkillIndex = 0;
@@ -54,6 +51,12 @@ public class SkillSlecet : MonoBehaviour
     };
     #endregion
 
+    private void Awake()
+    {
+        // ⭐ [추가] 첫 게임 로드 시 메인 메뉴가 먼저 뜨도록 이 기술선택 스크립트는 강제 비활성화 대기
+        this.enabled = false;
+    }
+
     private void OnEnable()
     {
         if (wallManager != null) wallManager.isSkillWindowOpen = true;
@@ -71,7 +74,7 @@ public class SkillSlecet : MonoBehaviour
 
         Pokemon activePokemon = wallManager.player[0];
         currentSkills = activePokemon.Skills;
-        totalSkillsCount = currentSkills != null ? currentSkills.Count : 0;
+        totalSkillsCount = currentSkills.Count;
 
         for (int i = 0; i < skillButtonTexts.Count; i++)
         {
@@ -176,7 +179,12 @@ public class SkillSlecet : MonoBehaviour
     {
         isAttacking = true;
 
-        if (skillWindowContainer != null) skillWindowContainer.SetActive(false);
+        SlectButton slectButtonComp = (wallManager != null) ? wallManager.GetComponent<SlectButton>() : null;
+        if (slectButtonComp != null)
+        {
+            if (slectButtonComp.ChoiceSkill != null) slectButtonComp.ChoiceSkill.SetActive(false);
+            if (slectButtonComp.ChoiceSlecet != null) slectButtonComp.ChoiceSlecet.SetActive(false);
+        }
 
         Pokemon playerPoke = wallManager.player[0];
         Pokemon enemyPoke = wallManager.enemy[0];
@@ -190,25 +198,21 @@ public class SkillSlecet : MonoBehaviour
         if (isEnemyFaster)
         {
             yield return StartCoroutine(ExecuteSkillWithStatusCheck(enemyPoke, playerPoke, enemySkill, wallManager.PlayerHpSlider, true));
-
             if (playerPoke.nowHp <= 0 || enemyPoke.nowHp <= 0)
             {
                 yield return StartCoroutine(HandleBattleEndFlow(playerPoke, enemyPoke));
                 yield break;
             }
-
             yield return StartCoroutine(ExecuteSkillWithStatusCheck(playerPoke, enemyPoke, playerSkill, wallManager.EnemyHpSlider, false));
         }
         else
         {
             yield return StartCoroutine(ExecuteSkillWithStatusCheck(playerPoke, enemyPoke, playerSkill, wallManager.EnemyHpSlider, false));
-
             if (playerPoke.nowHp <= 0 || enemyPoke.nowHp <= 0)
             {
                 yield return StartCoroutine(HandleBattleEndFlow(playerPoke, enemyPoke));
                 yield break;
             }
-
             yield return StartCoroutine(ExecuteSkillWithStatusCheck(enemyPoke, playerPoke, enemySkill, wallManager.PlayerHpSlider, true));
         }
 
@@ -228,16 +232,34 @@ public class SkillSlecet : MonoBehaviour
 
         isAttacking = false;
 
+        if (skillWindowContainer != null) skillWindowContainer.SetActive(true);
+
         if (wallManager != null)
         {
             wallManager.isSkillWindowOpen = false;
+            wallManager.Choice = 0;
+
+            if (slectButtonComp != null)
+            {
+                if (slectButtonComp.ChoiceSkill != null) slectButtonComp.ChoiceSkill.SetActive(false);
+                if (slectButtonComp.ChoiceSlecet != null) slectButtonComp.ChoiceSlecet.SetActive(true);
+
+                slectButtonComp.ON();
+                slectButtonComp.enabled = true;
+
+                slectButtonComp.SendMessage("OnMenuChanged", 0, SendMessageOptions.DontRequireReceiver);
+            }
+
             wallManager.UpdateBattleUI();
         }
 
-        if (mainMenuContainer != null) mainMenuContainer.SetActive(true);
-        if (battleLogText != null) battleLogText.text = "어떤 행동을 할까?";
+        if (battleLogText != null)
+        {
+            battleLogText.text = "어떤 행동을 할까?";
+        }
 
-        this.gameObject.SetActive(false);
+        // 턴이 종료되었으므로 다시 FIGHT를 누르기 전까지 Update 루프 정지
+        this.enabled = false;
     }
 
     private IEnumerator HandleBattleEndFlow(Pokemon playerPoke, Pokemon enemyPoke)
@@ -255,6 +277,7 @@ public class SkillSlecet : MonoBehaviour
         isAttacking = false;
     }
 
+    #region [행동 조건 판정 및 상태이상 데미지 서브 코루틴]
     private IEnumerator ExecuteSkillWithStatusCheck(Pokemon attacker, Pokemon defender, Skill skill, Slider targetHpSlider, bool isTargetPlayer)
     {
         if (attacker.currentStatus == Status.Sleep)
@@ -319,9 +342,14 @@ public class SkillSlecet : MonoBehaviour
                     int selfDamage = Mathf.RoundToInt(((2 * attacker.level / 5 + 2) * 40 * attacker.attack / Mathf.Max(1, attacker.defense) / 50 + 2));
                     attacker.nowHp = Mathf.Max(0, attacker.nowHp - selfDamage);
 
-                    // 자해 대상에 따른 Slider 매칭 버그 수정 (isTargetPlayer 기반이 아님)
-                    Slider selfSlider = isTargetPlayer ? wallManager.EnemyHpSlider : wallManager.PlayerHpSlider;
-                    yield return StartCoroutine(UpdateHPSliderRoutine(selfSlider, attacker, !isTargetPlayer));
+                    if (isTargetPlayer)
+                    {
+                        yield return StartCoroutine(UpdateHPSliderRoutine(wallManager.EnemyHpSlider, attacker, false));
+                    }
+                    else
+                    {
+                        yield return StartCoroutine(UpdateHPSliderRoutine(wallManager.PlayerHpSlider, attacker, true));
+                    }
                     yield break;
                 }
             }
@@ -380,23 +408,34 @@ public class SkillSlecet : MonoBehaviour
 
         if (skill.effectStatus != Status.None && defender.nowHp > 0)
         {
-            if (Random.Range(0, 100) < skill.statusChance)
+            if (defender.currentStatus != Status.None)
             {
-                if (defender.ApplyStatus(skill.effectStatus))
+                if (battleLogText != null)
                 {
-                    string statusMsg = "";
-                    switch (skill.effectStatus)
+                    battleLogText.text = $"{defender.pokemonName}은(는) 이미 상태 이상에 걸려 있다!";
+                }
+                yield return new WaitForSeconds(1.3f);
+            }
+            else
+            {
+                if (Random.Range(0, 100) < skill.statusChance)
+                {
+                    if (defender.ApplyStatus(skill.effectStatus))
                     {
-                        case Status.Paralysis: statusMsg = $"{defender.pokemonName}은(는) 마비되어 저려왔다!"; break;
-                        case Status.Burn: statusMsg = $"{defender.pokemonName}은(는) 화상을 입었다!"; break;
-                        case Status.Poison: statusMsg = $"{defender.pokemonName}은(는) 독에 걸렸다!"; break;
-                        case Status.Sleep: statusMsg = $"{defender.pokemonName}은(는) 깊은 잠에 빠졌다!"; break;
-                        case Status.Freeze: statusMsg = $"{defender.pokemonName}은(는) 꽁꽁 얼어붙었다!"; break;
-                        case Status.Confusion: statusMsg = $"{defender.pokemonName}은(는) 혼란에 빠졌다!"; break;
+                        string statusMsg = "";
+                        switch (skill.effectStatus)
+                        {
+                            case Status.Paralysis: statusMsg = $"{defender.pokemonName}은(는) 마비되어 저려왔다!"; break;
+                            case Status.Burn: statusMsg = $"{defender.pokemonName}은(는) 화상을 입었다!"; break;
+                            case Status.Poison: statusMsg = $"{defender.pokemonName}은(는) 독에 걸렸다!"; break;
+                            case Status.Sleep: statusMsg = $"{defender.pokemonName}은(는) 깊은 잠에 빠졌다!"; break;
+                            case Status.Freeze: statusMsg = $"{defender.pokemonName}은(는) 꽁꽁 얼어붙었다!"; break;
+                            case Status.Confusion: statusMsg = $"{defender.pokemonName}은(는) 혼란에 빠졌다!"; break;
+                        }
+                        battleLogText.text = statusMsg;
+                        wallManager.UpdateBattleUI();
+                        yield return new WaitForSeconds(1.3f);
                     }
-                    battleLogText.text = statusMsg;
-                    wallManager.UpdateBattleUI();
-                    yield return new WaitForSeconds(1.3f);
                 }
             }
         }
@@ -415,11 +454,11 @@ public class SkillSlecet : MonoBehaviour
                 battleLogText.text = $"{pokemon.pokemonName}은(는) 화상의 데미지를 입고 있다!";
 
             yield return new WaitForSeconds(1.3f);
-            yield return StartCoroutine(UpdateHPSliderRoutine(hpSlider, pokemon, !isPlayer)); // target이 플레이어인지 여부 반전 맞춤
+            yield return StartCoroutine(UpdateHPSliderRoutine(hpSlider, pokemon, isPlayer));
         }
     }
 
-    private IEnumerator UpdateHPSliderRoutine(Slider targetHpSlider, Pokemon targetPokemon, bool isTargetPlayer)
+    private IEnumerator UpdateHPSliderRoutine(Slider targetHpSlider, Pokemon targetPokemon, bool isPlayer)
     {
         if (targetHpSlider != null)
         {
@@ -435,19 +474,18 @@ public class SkillSlecet : MonoBehaviour
 
                 targetHpSlider.value = Mathf.Lerp(startValue, targetValue, currentProgress);
 
-                if (isTargetPlayer)
+                if (isPlayer)
                 {
-                    int visualHp = Mathf.RoundToInt(Mathf.Lerp(targetPokemon.maxHp * startValue, targetPokemon.nowHp, currentProgress));
-                    // 전체 UI를 덮어씌우는 대신 플레이어 텍스트만 실시간으로 안전하게 갱신하도록 우회
-                    wallManager.UpdatePlayerHpTextRealtime(visualHp);
+                    wallManager.UpdateBattleUI();
                 }
                 yield return null;
             }
             targetHpSlider.value = targetValue;
-            wallManager.UpdateBattleUI(); // 연출이 완전히 종료된 후 최종 UI 정보 전체 동기화
+            wallManager.UpdateBattleUI();
         }
         yield return new WaitForSeconds(0.2f);
     }
+    #endregion
 
     private float GetTypeMultiplier(PokemonType attackType, PokemonType defenseType)
     {
@@ -459,10 +497,9 @@ public class SkillSlecet : MonoBehaviour
 
     private int GetTypeIndex(PokemonType type)
     {
-        // 2진수 문자열 변환 방식 대신 안전하고 직관적인 정수 캐스팅 인덱싱 적용
         int value = (int)type;
-        if (value < 0 || value >= 17) return 0;
-        return value;
+        if (value <= 0) return 0;
+        return System.Convert.ToString(value, 2).Length - 1;
     }
 
     private GameObject GetUIUnderMouse()

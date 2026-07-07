@@ -45,7 +45,7 @@ public class wall : MonoBehaviour
     [HideInInspector] public int spDef;
     [HideInInspector] public int speed;
 
-    private int Choice = 0;
+    public int Choice = 0;
     private const int TotalMenuCount = 4;
 
     public event Action<int> OnChoiceChanged;
@@ -223,7 +223,7 @@ public class wall : MonoBehaviour
         }
     }
 
-    private void SlectNum()
+    public void SlectNum()
     {
         OnChoiceChanged?.Invoke(Choice);
     }

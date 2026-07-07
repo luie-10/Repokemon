@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections; // 코루틴 사용을 위해 필요
+using System.Collections;
+using UnityEngine.UI; // ⭐ UI Image 사용을 위해 반드시 필요!
 
 public class BattleStart : MonoBehaviour
 {
     [Header("오브젝트 참조")]
-    public GameObject playerPokemon; // 플레이어 포켓몬 프리팹 (또는 오브젝트)
+    public GameObject playerPokemon; // 플레이어 포켓몬 오브젝트 (UI Image가 붙어있는 오브젝트)
     public GameObject Player; // 플레이어 게임 오브젝트
     public AudioSource battleMusic; // 배틀 음악 오디오 소스
 
@@ -16,9 +17,8 @@ public class BattleStart : MonoBehaviour
     [SerializeField] private int blinkCount = 3; // 포켓몬 점멸 횟수
     [SerializeField] private float blinkInterval = 0.15f; // 점멸 간격 (초)
 
-    private SpriteRenderer pokemonSpriteRenderer;
-    // 만약 UI(Canvas) 환경이라면 아래 주석을 해제하고 사용하세요.
-    // private UnityEngine.UI.Image pokemonImage;
+    // ⭐ 2D Sprite 대신 UI Image 컴포넌트를 사용합니다.
+    private Image pokemonImage;
 
     void Start()
     {
@@ -26,8 +26,8 @@ public class BattleStart : MonoBehaviour
         playerPokemon.SetActive(false);
         Player.SetActive(true);
 
-        // 컴포넌트 미리 가져오기 (2D Sprite 기준)
-        pokemonSpriteRenderer = playerPokemon.GetComponentInChildren<SpriteRenderer>();
+        // ⭐ UI(Canvas) 환경이므로 자식에게서 Image 컴포넌트를 가져옵니다.
+        pokemonImage = playerPokemon.GetComponentInChildren<Image>();
 
         // 애니메이션 트리거 실행
         if (Player.GetComponent<Animator>() != null)
@@ -79,37 +79,36 @@ public class BattleStart : MonoBehaviour
     }
 
     /// <summary>
-    /// 포켓몬을 활성화하고 하얀색/원래색으로 점멸시키는 코루틴
+    /// 포켓몬을 활성화하고 UI 이미지를 깜빡이게 만드는 코루틴
     /// </summary>
     private IEnumerator SpawnAndBlinkPokemon()
     {
-        // 포켓몬 활성화
+        // 포켓몬 활성화 (피카츄 이미지 등장)
         playerPokemon.SetActive(true);
 
-        if (pokemonSpriteRenderer != null)
+        // ⭐ UI Image 컴포넌트를 정상적으로 찾았을 때 작동합니다.
+        if (pokemonImage != null)
         {
-            Color originalColor = pokemonSpriteRenderer.color;
+            Color originalColor = pokemonImage.color;
 
             // 정해진 횟수만큼 점멸 반복
             for (int i = 0; i < blinkCount; i++)
             {
-                // ⚪ 하얀색 점멸 (또는 투명도를 이용한 깜빡임)
-                // 완벽한 하얀색 실루엣을 원한다면 custom 셰이더가 필요하지만, 
-                // 기본적으론 알파값(투명도)을 조절하거나 무채색을 입혀 표현합니다.
-                pokemonSpriteRenderer.color = new Color(1f, 1f, 1f, 0.2f); // 깜빡이는 순간 (약간 투명한 흰색 느낌)
+                // ⚪ 알파값(투명도)을 줄여서 깜빡이는 연출 (0.2f = 거의 투명하게)
+                pokemonImage.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0.2f);
                 yield return new WaitForSeconds(blinkInterval);
 
-                // 🎨 원래 색상으로 복구
-                pokemonSpriteRenderer.color = originalColor;
+                // 🎨 원래 색상(불투명)으로 복구
+                pokemonImage.color = originalColor;
                 yield return new WaitForSeconds(blinkInterval);
             }
 
-            // 확실하게 원래 색상으로 초기화 보장
-            pokemonSpriteRenderer.color = originalColor;
+            // 확실하게 원래 색상과 투명도(1.0f)로 초기화 보장
+            pokemonImage.color = originalColor;
         }
         else
         {
-            // SpriteRenderer를 찾지 못했을 때를 위한 예외 처리 (기본 활성화만 진행)
+            // Image 컴포넌트를 찾지 못했을 때를 위한 예외 처리
             yield return new WaitForSeconds(blinkCount * blinkInterval * 2);
         }
 

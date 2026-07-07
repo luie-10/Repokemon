@@ -3442,6 +3442,7 @@ MonoBehaviour:
   spAtk: 0
   spDef: 0
   speed: 0
+  Choice: 0
   isSkillWindowOpen: 0
 --- !u!4 &1028937529
 Transform:
@@ -3627,7 +3628,6 @@ MonoBehaviour:
   typeText: {fileID: 316468597}
   skillWindowContainer: {fileID: 1509758471}
   battleLogText: {fileID: 259726953}
-  mainMenuContainer: {fileID: 1501922484}
 --- !u!1 &1030387735
 GameObject:
   m_ObjectHideFlags: 0
