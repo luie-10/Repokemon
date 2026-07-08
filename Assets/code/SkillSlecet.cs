@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -20,7 +20,7 @@ public class SkillSlecet : MonoBehaviour
     [SerializeField] private TextMeshProUGUI typeText;
 
     [Header("배틀 로그 및 연출용 UI")]
-    [SerializeField] private GameObject skillWindowContainer; // 메인/기술 UI 전체를 감싸는 최상위 부모 컨테이너
+    [SerializeField] private GameObject skillWindowContainer;
     [SerializeField] private TextMeshProUGUI battleLogText;
 
     private List<Skill> currentSkills = new List<Skill>();
@@ -28,7 +28,6 @@ public class SkillSlecet : MonoBehaviour
     private int totalSkillsCount = 0;
     private bool isAttacking = false;
 
-    #region [타입 상성 매트릭스 테이블]
     private readonly float[,] typeMatchupTable = new float[17, 17]
     {
         { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f },
@@ -49,11 +48,9 @@ public class SkillSlecet : MonoBehaviour
         { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f },
         { 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 0.5f }
     };
-    #endregion
 
     private void Awake()
     {
-        // ⭐ [추가] 첫 게임 로드 시 메인 메뉴가 먼저 뜨도록 이 기술선택 스크립트는 강제 비활성화 대기
         this.enabled = false;
     }
 
@@ -258,7 +255,6 @@ public class SkillSlecet : MonoBehaviour
             battleLogText.text = "어떤 행동을 할까?";
         }
 
-        // 턴이 종료되었으므로 다시 FIGHT를 누르기 전까지 Update 루프 정지
         this.enabled = false;
     }
 
@@ -277,7 +273,6 @@ public class SkillSlecet : MonoBehaviour
         isAttacking = false;
     }
 
-    #region [행동 조건 판정 및 상태이상 데미지 서브 코루틴]
     private IEnumerator ExecuteSkillWithStatusCheck(Pokemon attacker, Pokemon defender, Skill skill, Slider targetHpSlider, bool isTargetPlayer)
     {
         if (attacker.currentStatus == Status.Sleep)
@@ -485,7 +480,6 @@ public class SkillSlecet : MonoBehaviour
         }
         yield return new WaitForSeconds(0.2f);
     }
-    #endregion
 
     private float GetTypeMultiplier(PokemonType attackType, PokemonType defenseType)
     {

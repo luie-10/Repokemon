@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -72,16 +72,16 @@ public class SlectButton : MonoBehaviour
 
         switch (confirmedChoice)
         {
-            case 0: // FIGHT 
+            case 0:
                 Fight();
                 break;
-            case 1: // BAG
+            case 1:
                 OpenBag();
                 break;
-            case 2: // Pokémon
+            case 2:
                 OpenPokemonMenu();
                 break;
-            case 3: // RUN
+            case 3:
                 RunAway();
                 break;
         }
@@ -97,19 +97,15 @@ public class SlectButton : MonoBehaviour
 
     public void ON() => SetAllButtonsActive(true);
 
-    // --- 각 메뉴가 선택되었을 때 실행될 세부 함수 공간 ---
     void Fight()
     {
         Debug.Log("싸우기 메뉴 진입! 기술 선택창 활성화");
 
-        // 1. 메인 선택 버튼 인터랙션 비활성화 및 숨김
         SetAllButtonsActive(false);
         if (ChoiceSlecet != null) ChoiceSlecet.SetActive(false);
 
-        // 2. 기술 선택 UI 창 활성화
         if (ChoiceSkill != null) ChoiceSkill.SetActive(true);
 
-        // ⭐ [핵심 추가] 같은 오브젝트 또는 자식에 있는 SkillSlecet 스크립트를 활성화하여 조작권 전환
         SkillSlecet skillSelectComp = GetComponentInChildren<SkillSlecet>(true);
         if (skillSelectComp != null)
         {

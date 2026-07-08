@@ -1,68 +1,53 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
-using UnityEngine.UI; // ⭐ UI Image 사용을 위해 반드시 필요!
+using UnityEngine.UI;
 
 public class BattleStart : MonoBehaviour
 {
     [Header("오브젝트 참조")]
-    public GameObject playerPokemon; // 플레이어 포켓몬 오브젝트 (UI Image가 붙어있는 오브젝트)
-    public GameObject Player; // 플레이어 게임 오브젝트
-    public AudioSource battleMusic; // 배틀 음악 오디오 소스
+    public GameObject playerPokemon;
+    public GameObject Player;
+    public AudioSource battleMusic;
 
     [Header("연출 설정")]
-    [SerializeField] private float playerFadeDuration = 1.0f; // 플레이어가 사라지는 시간
-    [SerializeField] private Vector3 playerMoveDirection = new Vector3(-1f, -1f, 0f); // 왼쪽 대각선 아래 방향
-    [SerializeField] private float playerMoveSpeed = 5f; // 플레이어 이동 속도
+    [SerializeField] private float playerFadeDuration = 1.0f;
+    [SerializeField] private Vector3 playerMoveDirection = new Vector3(-1f, -1f, 0f);
+    [SerializeField] private float playerMoveSpeed = 5f;
 
-    [SerializeField] private int blinkCount = 3; // 포켓몬 점멸 횟수
-    [SerializeField] private float blinkInterval = 0.15f; // 점멸 간격 (초)
+    [SerializeField] private int blinkCount = 3;
+    [SerializeField] private float blinkInterval = 0.15f;
 
-    // ⭐ 2D Sprite 대신 UI Image 컴포넌트를 사용합니다.
     private Image pokemonImage;
 
     void Start()
     {
-        // 초기 상태 설정
         playerPokemon.SetActive(false);
         Player.SetActive(true);
 
-        // ⭐ UI(Canvas) 환경이므로 자식에게서 Image 컴포넌트를 가져옵니다.
         pokemonImage = playerPokemon.GetComponentInChildren<Image>();
 
-        // 애니메이션 트리거 실행
         if (Player.GetComponent<Animator>() != null)
         {
             Player.GetComponent<Animator>().SetTrigger("BattleStart");
         }
 
-        // 음악 재생
         if (battleMusic != null && !battleMusic.isPlaying)
         {
             battleMusic.Play();
         }
 
-        // 🎬 배틀 시작 연출 시퀀스 시작!
         StartCoroutine(BattleStartSequence());
     }
 
-    /// <summary>
-    /// 전체적인 배틀 시작 연출을 제어하는 메인 코루틴
-    /// </summary>
     private IEnumerator BattleStartSequence()
     {
-        // 1. 플레이어가 왼쪽 대각선 아래로 이동하면서 자연스럽게 퇴장
         yield return StartCoroutine(MovePlayerAway());
 
-        // 2. 플레이어 오브젝트 비활성화 (화면에서 완전히 사라짐)
         Player.SetActive(false);
 
-        // 3. 포켓몬 등장 및 점멸 연출
         yield return StartCoroutine(SpawnAndBlinkPokemon());
     }
 
-    /// <summary>
-    /// 플레이어를 왼쪽 대각선 아래로 이동시키는 코루틴
-    /// </summary>
     private IEnumerator MovePlayerAway()
     {
         float elapsedTime = 0f;
@@ -70,7 +55,6 @@ public class BattleStart : MonoBehaviour
 
         while (elapsedTime < playerFadeDuration)
         {
-            // 매 프레임 지정된 방향과 속도로 플레이어 이동
             Player.transform.Translate(direction * playerMoveSpeed * Time.deltaTime);
 
             elapsedTime += Time.deltaTime;
@@ -78,37 +62,27 @@ public class BattleStart : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 포켓몬을 활성화하고 UI 이미지를 깜빡이게 만드는 코루틴
-    /// </summary>
     private IEnumerator SpawnAndBlinkPokemon()
     {
-        // 포켓몬 활성화 (피카츄 이미지 등장)
         playerPokemon.SetActive(true);
 
-        // ⭐ UI Image 컴포넌트를 정상적으로 찾았을 때 작동합니다.
         if (pokemonImage != null)
         {
             Color originalColor = pokemonImage.color;
 
-            // 정해진 횟수만큼 점멸 반복
             for (int i = 0; i < blinkCount; i++)
             {
-                // ⚪ 알파값(투명도)을 줄여서 깜빡이는 연출 (0.2f = 거의 투명하게)
                 pokemonImage.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0.2f);
                 yield return new WaitForSeconds(blinkInterval);
 
-                // 🎨 원래 색상(불투명)으로 복구
                 pokemonImage.color = originalColor;
                 yield return new WaitForSeconds(blinkInterval);
             }
 
-            // 확실하게 원래 색상과 투명도(1.0f)로 초기화 보장
             pokemonImage.color = originalColor;
         }
         else
         {
-            // Image 컴포넌트를 찾지 못했을 때를 위한 예외 처리
             yield return new WaitForSeconds(blinkCount * blinkInterval * 2);
         }
 

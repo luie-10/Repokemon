@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
@@ -31,7 +31,6 @@ public class wall : MonoBehaviour
     [Header("감시할 버튼 목록")]
     public List<Button> buttonsToWatch;
 
-    // 중복 데이터 변수 제거 및 속성(Property)화를 통해 player[0].nowHp와 직접 연결
     public int maxHP { get; private set; }
     public int nowHP
     {
@@ -65,7 +64,7 @@ public class wall : MonoBehaviour
             speed = p.speed;
 
             maxHP = CalculateMaxHP(p.level, p.maxHp, 31, 252);
-            p.maxHp = maxHP; // 포켓몬 자체 스펙의 maxHp도 함께 동기화
+            p.maxHp = maxHP;
             nowHP = maxHP;
         }
 
@@ -168,7 +167,6 @@ public class wall : MonoBehaviour
         }
     }
 
-    // 슬라이더 애니메이션 도중 실시간 텍스트 갱신을 위한 보조 함수
     public void UpdatePlayerHpTextRealtime(int currentHp)
     {
         if (playerHpText != null)
